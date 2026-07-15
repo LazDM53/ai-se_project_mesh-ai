@@ -1,7 +1,10 @@
 import express from "express";
+import { router } from "./routes/index.js";
 
 const app = express();
 const PORT = 3000;
+
+app.use(router);
 
 app.get("/health", (req, res): void => {
   res.status(200).json({
