@@ -26,7 +26,10 @@ function errorHandler(
   next();
 }
 
-const notFoundHandler: RequestHandler = (req, res) => {
+const notFoundHandler: RequestHandler = (
+  req,
+  res,
+): void => {
   res.status(404).json({
     success: false,
     data: null,

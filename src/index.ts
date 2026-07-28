@@ -10,6 +10,15 @@ const PORT = 3000;
 app.use(logger);
 app.use(express.json());
 
+// Health check
+app.get('/health', (req, res): void => {
+  res.status(200).json({
+    success: true,
+    data: { status: 'ok' },
+    error: null,
+  });
+});
+
 // Routes
 app.use(router);
 
