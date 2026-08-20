@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import mongoose from 'mongoose';
 import { router } from './routes/index.js';
 import { logger } from './middleware/logger.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
@@ -32,6 +33,15 @@ app.use(notFoundHandler);
 // 500 handler (must be last)
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Connect to MongoDB, then start the server
+mongoose
+  .connect(process.env.MONGO_URI!)
+  .then(() => {
+    console.log('MongoDB connected');
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Connection error', err);
+  });
