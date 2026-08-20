@@ -84,10 +84,4 @@ export const deleteChat = (req: Request, res: Response): void => {
   res.sendStatus(204);
 };
 
-export const createMessage = (req: Request, res: Response): void => {
-  res.status(201).json({
-    success: true,
-    data: {},
-    error: null,
-  });
-};
+
