@@ -1,17 +1,46 @@
 import type { Request, Response } from 'express';
 
-export const uploadDocument = (req: Request, res: Response): void => {
+import Document from '../models/document.js';
+
+export const uploadDocument = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  if (!req.file) {
+    res.status(400).json({
+      success: false,
+      data: null,
+      error: { message: 'file is required' },
+    });
+    return;
+  }
+
+  const userId = req.user!.userId;
+
+  const document = await Document.create({
+    title: req.file.originalname,
+    fileName: req.file.filename,
+    userId,
+  });
+
   res.status(201).json({
     success: true,
-    data: {},
+    data: document,
     error: null,
   });
 };
 
-export const getDocuments = (req: Request, res: Response): void => {
+export const getDocuments = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const userId = req.user!.userId;
+
+  const documents = await Document.find({ userId });
+
   res.status(200).json({
     success: true,
-    data: {},
+    data: documents,
     error: null,
   });
 };
