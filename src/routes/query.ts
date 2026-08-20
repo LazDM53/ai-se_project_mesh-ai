@@ -1,8 +1,13 @@
 import { Router } from 'express';
-import { query } from '../controllers/query.js';
+
+import { queryDocuments } from '../controllers/query.js';
+
+import { auth } from '../middleware/auth.js';
 
 const queryRouter = Router();
 
-queryRouter.post('/', query);
+queryRouter.use(auth);
+
+queryRouter.post('/', queryDocuments);
 
 export { queryRouter };
