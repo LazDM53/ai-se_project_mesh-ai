@@ -12,7 +12,7 @@ export const auth = (
     res.status(401).json({
       success: false,
       data: null,
-      error: { message: 'Unauthorized' },
+      error: { message: 'Missing or invalid authorization token' },
     });
     return;
   }
