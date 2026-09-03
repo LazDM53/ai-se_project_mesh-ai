@@ -40,8 +40,11 @@ export default function UploadArea({ onFileSelect }: Props) {
             strokeLinejoin="round"
           />
         </svg>
-        <span>Drag and drop a PDF, or </span>
-        <span className="underline">Upload</span>
+
+        <span className="upload-area__text">
+  Drag and drop a PDF, or <span className="underline">Upload</span>
+</span>
+
         <input
           type="file"
           accept=".pdf"

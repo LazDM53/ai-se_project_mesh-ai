@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
+import { getDocuments } from "../../utils/api";
 import UploadArea from "../../components/UploadArea/UploadArea";
 import type { KnowledgeDoc } from "../../utils/api";
 import "./KnowledgeBase.css";
 
-
 export default function KnowledgeBase() {
   const [documents, setDocuments] = useState<KnowledgeDoc[]>([]);
- // const [isLoading, setIsLoading] = useState<boolean>(true);
- // const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileSelect = (file: File) => {
     const newDoc: KnowledgeDoc = {
@@ -18,26 +18,78 @@ export default function KnowledgeBase() {
       createdAt: new Date().toISOString(),
     };
 
-    setDocuments([newDoc, ...documents]);
+    setDocuments((currentDocuments) => [
+      newDoc,
+      ...currentDocuments,
+    ]);
   };
 
-useEffect(() => {
-  console.log(documents);
-}, [documents]);
+  const handleDelete = (id: string) => {
+    setDocuments((currentDocuments) =>
+      currentDocuments.filter((doc) => doc._id !== id)
+    );
+  };
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await getDocuments();
+        setDocuments(res.data || []);
+      } catch {
+        setError("Failed to load documents.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    load();
+  }, []);
 
   return (
     <div className="knowledge-base">
-      <h1>Manage Your Knowledge Base</h1>
+      <div className="knowledge-base__label">
+        Knowledge Base Management
+      </div>
 
-      <section className="knowledge-base__content">
-        <p>Upload documents (PDF)</p>
+      <main className="knowledge-base__panel">
+        <section className="knowledge-base__content">
+          <h1>Manage Your Knowledge Base</h1>
 
-        <UploadArea onFileSelect={handleFileSelect} />
+          <p className="knowledge-base__upload-label">
+            Upload documents (PDF)
+          </p>
 
-        <div className="knowledge-base__documents"></div>
+          <UploadArea onFileSelect={handleFileSelect} />
 
-        <button className="knowledge-base__save">Save</button>
-      </section>
+          <div className="knowledge-base__documents">
+            {!isLoading &&
+              !error &&
+              documents.map((doc) => (
+                <div
+                  className="knowledge-base__document"
+                  key={doc._id}
+                >
+                  <span>{doc.fileName}</span>
+
+                  <button
+                    type="button"
+                    aria-label={`Delete ${doc.fileName}`}
+                    onClick={() => handleDelete(doc._id)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+          </div>
+
+          <button
+            type="button"
+            className="knowledge-base__save"
+          >
+            Save
+          </button>
+        </section>
+      </main>
     </div>
   );
 }
