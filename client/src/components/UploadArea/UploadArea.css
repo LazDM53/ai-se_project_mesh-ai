@@ -26,6 +26,7 @@
 
 .upload-area__text {
   width: 186px;
+  white-space: nowrap;
   font-size: 14px;
   line-height: 120%;
   font-weight: 400;

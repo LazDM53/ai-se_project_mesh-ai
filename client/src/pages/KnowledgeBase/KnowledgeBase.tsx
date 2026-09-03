@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { getDocuments } from "../../utils/api";
 import UploadArea from "../../components/UploadArea/UploadArea";
@@ -47,9 +48,7 @@ export default function KnowledgeBase() {
 
   return (
     <div className="knowledge-base">
-      <div className="knowledge-base__label">
-        Knowledge Base Management
-      </div>
+      
 
       <main className="knowledge-base__panel">
         <section className="knowledge-base__content">
@@ -62,24 +61,34 @@ export default function KnowledgeBase() {
           <UploadArea onFileSelect={handleFileSelect} />
 
           <div className="knowledge-base__documents">
-            {!isLoading &&
-              !error &&
-              documents.map((doc) => (
-                <div
-                  className="knowledge-base__document"
-                  key={doc._id}
-                >
-                  <span>{doc.fileName}</span>
+            {isLoading && <p>Loading...</p>}
 
-                  <button
-                    type="button"
-                    aria-label={`Delete ${doc.fileName}`}
-                    onClick={() => handleDelete(doc._id)}
+            {!isLoading && error && <p>{error}</p>}
+
+            {!isLoading && !error && documents.length === 0 && (
+              <p>No documents yet.</p>
+            )}
+
+            {!isLoading && !error && documents.length > 0 && (
+              <>
+                {documents.map((doc) => (
+                  <div
+                    className="knowledge-base__document"
+                    key={doc._id}
                   >
-                    ×
-                  </button>
-                </div>
-              ))}
+                    <span>{doc.fileName}</span>
+
+                    <button
+                      type="button"
+                      aria-label={`Delete ${doc.fileName}`}
+                      onClick={() => handleDelete(doc._id)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
 
           <button
@@ -93,3 +102,4 @@ export default function KnowledgeBase() {
     </div>
   );
 }
+
