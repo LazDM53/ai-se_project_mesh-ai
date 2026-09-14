@@ -1,0 +1,121 @@
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 670px;
+  margin: 102px auto 0;
+}
+
+.intro__heading {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 0 32px;
+}
+
+.intro__title {
+  margin: 0;
+  font-family: 'Space Grotesk', Arial, Helvetica, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 61px;
+  color: #1c1c1c;
+}
+
+/* Three cards */
+.intro__cards {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 670px;
+  margin-bottom: 32px;
+}
+
+.intro__card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 210px;
+  height: 236px;
+  padding: 15px 12px;
+  box-sizing: border-box;
+  background: #f6f3ff;
+  border-radius: 16px;
+}
+
+.intro__card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+  width: 186px;
+}
+
+/* Icon sizing */
+.intro__card-icon {
+  width: 100px;
+  height: 105px;
+  object-fit: contain;
+}
+
+/* Individual Figma icon sizes */
+.intro__card:nth-child(1) .intro__card-icon {
+  width: 97px;
+  height: 100px;
+}
+
+.intro__card:nth-child(2) .intro__card-icon {
+  width: 113px;
+  height: 105px;
+}
+
+.intro__card:nth-child(3) .intro__card-icon {
+  width: 114px;
+  height: 106px;
+}
+
+/* Card text */
+.intro__card-description {
+  width: 186px;
+  margin: 0;
+  font-family: 'Work Sans', Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 120%;
+  color: #1c1c1c;
+}
+
+/* Bottom section */
+.intro__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  width: 670px;
+}
+
+.intro__instruction {
+  margin: 0;
+  font-family: 'Work Sans', Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 23px;
+  color: #1c1c1c;
+}
+
+.intro__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 77px;
+  height: 44px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 8px;
+  background: #1c1c1c;
+  color: #ffffff;
+  font-family: 'Work Sans', Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 21px;
+  cursor: pointer;
+}

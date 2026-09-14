@@ -1,7 +1,27 @@
 .app-layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
 .app-layout__main {
   width: 100%;
+  flex-grow: 1;
+}
+
+.app-layout__backdrop {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .app-layout__backdrop {
+    display: block;
+    position: fixed;
+    top: 56px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgb(0 0 0 / 0.3);
+    z-index: 99;
+  }
 }

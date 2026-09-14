@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { getDocuments } from "../../utils/api";
 import UploadArea from "../../components/UploadArea/UploadArea";
@@ -47,59 +46,57 @@ export default function KnowledgeBase() {
   }, []);
 
   return (
-    <div className="knowledge-base">
-      
+    <section className="knowledge-base">
+      <h1 className="knowledge-base__title">
+        Manage Your Knowledge Base
+      </h1>
 
-      <main className="knowledge-base__panel">
-        <section className="knowledge-base__content">
-          <h1>Manage Your Knowledge Base</h1>
+      <div className="knowledge-base__document-upload">
+        <p className="knowledge-base__upload-label">
+          Upload documents (PDF)
+        </p>
 
-          <p className="knowledge-base__upload-label">
-            Upload documents (PDF)
-          </p>
+        <UploadArea onFileSelect={handleFileSelect} />
+      </div>
 
-          <UploadArea onFileSelect={handleFileSelect} />
+      <div className="knowledge-base__documents">
+        {isLoading && <p>Loading...</p>}
 
-          <div className="knowledge-base__documents">
-            {isLoading && <p>Loading...</p>}
+        {!isLoading && error && <p>{error}</p>}
 
-            {!isLoading && error && <p>{error}</p>}
+        {!isLoading && !error && documents.length === 0 && (
+          <p>No documents yet.</p>
+        )}
 
-            {!isLoading && !error && documents.length === 0 && (
-              <p>No documents yet.</p>
-            )}
+        {!isLoading && !error && documents.length > 0 && (
+          <>
+            {documents.map((doc) => (
+              <div
+                className="knowledge-base__document"
+                key={doc._id}
+              >
+                <span>{doc.fileName}</span>
 
-            {!isLoading && !error && documents.length > 0 && (
-              <>
-                {documents.map((doc) => (
-                  <div
-                    className="knowledge-base__document"
-                    key={doc._id}
-                  >
-                    <span>{doc.fileName}</span>
+                <button
+                  type="button"
+                  aria-label={`Delete ${doc.fileName}`}
+                  onClick={() => handleDelete(doc._id)}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
 
-                    <button
-                      type="button"
-                      aria-label={`Delete ${doc.fileName}`}
-                      onClick={() => handleDelete(doc._id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
-
-          <button
-            type="button"
-            className="knowledge-base__save"
-          >
-            Save
-          </button>
-        </section>
-      </main>
-    </div>
+      <button
+        type="button"
+        className="knowledge-base__save"
+      >
+        Save
+      </button>
+    </section>
   );
 }
 
