@@ -23,7 +23,7 @@ export default function Intro() {
             <div className="intro__card-content">
               <img
                 src={icon1}
-                alt=""
+                alt="Secure document workspace"
                 className="intro__card-icon"
               />
 
@@ -37,7 +37,7 @@ export default function Intro() {
             <div className="intro__card-content">
               <img
                 src={icon2}
-                alt=""
+                alt="Document organization"
                 className="intro__card-icon"
               />
 
@@ -51,7 +51,7 @@ export default function Intro() {
             <div className="intro__card-content">
               <img
                 src={icon3}
-                alt=""
+                alt="AI chat interface"
                 className="intro__card-icon"
               />
 
@@ -79,3 +79,4 @@ export default function Intro() {
     </main>
   );
 }
+

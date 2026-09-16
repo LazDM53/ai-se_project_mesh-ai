@@ -18,6 +18,12 @@
   cursor: pointer;
 }
 
+.upload-area__icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
 .upload-area__text {
   width: 186px;
   margin: 0;
