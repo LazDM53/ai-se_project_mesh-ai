@@ -1,86 +1,268 @@
+/* =========================
+   Knowledge Base
+   ========================= */
+
 .knowledge-base {
-  width: 670px;
-  margin: 34px auto 0;
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  background: #ffffff;
+  box-sizing: border-box;
 }
 
-.knowledge-base__title {
-  margin: 0 0 32px;
-  font-family: 'Space Grotesk', Arial, Helvetica, sans-serif;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 41px;
-  color: #1c1c1c;
-}
-
-.knowledge-base__document-upload {
+.knowledge-base__main {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 32px;
+
+  width: 100%;
+  max-width: 670px;
+  margin: 0 auto;
+  padding: 32px 20px;
+
+  box-sizing: border-box;
 }
 
-.knowledge-base__upload-label {
+/* =========================
+   Title
+   ========================= */
+
+.knowledge-base__title {
+  width: 100%;
   margin: 0;
-  font-family: 'Work Sans', Arial, Helvetica, sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 21px;
+
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  line-height: 41px;
+  font-weight: 700;
+
   color: #1c1c1c;
 }
 
-.knowledge-base__documents {
+/* =========================
+   Upload Section
+   ========================= */
+
+.upload-section {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
   width: 100%;
-  margin-top: 24px;
-  overflow-x: hidden;
 }
 
-.knowledge-base__document {
-  display: inline-flex;
+.upload-section__subtitle {
+  width: 100%;
+  margin: 0;
+
+  font-family: 'Work Sans', sans-serif;
+  font-size: 18px;
+  line-height: 21px;
+  font-weight: 400;
+
+  color: #1c1c1c;
+}
+
+/* =========================
+   Upload Area
+   ========================= */
+
+.upload-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 145px;
+  padding: 0;
+
+  box-sizing: border-box;
+
+  background: #f6f3ff;
+  border-radius: 16px;
+}
+
+.upload-area__label {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 8px;
-  flex: 0 1 auto;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: #f6f3ff;
-  font-family: 'Work Sans', Arial, Helvetica, sans-serif;
+
+  cursor: pointer;
+}
+
+.upload-area__icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.upload-area__text {
+  width: auto;
+  margin: 0;
+
+  font-family: 'Work Sans', sans-serif;
   font-size: 14px;
   line-height: 120%;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  font-weight: 400;
+
+  text-align: center;
+  text-decoration: underline;
+
+  color: rgba(28, 28, 28, 0.5);
 }
 
-.knowledge-base__document button {
-  flex: 0 0 auto;
+/* =========================
+   Document List
+   ========================= */
+
+.document-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+
+  width: 100%;
+  min-height: 212px;
+
+  gap: 12px;
+
+  box-sizing: border-box;
+}
+
+.document-list__item {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+
+  min-width: 0;
+  max-width: 100%;
+
+  padding: 12px 16px;
+  gap: 10px;
+
+  box-sizing: border-box;
+
+  background: rgba(28, 28, 28, 0.05);
+  border-radius: 8px;
+}
+
+.document-list__name {
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-family: 'Work Sans', sans-serif;
+  font-size: 14px;
+  line-height: 120%;
+  font-weight: 400;
+
+  color: #1c1c1c;
+}
+
+.document-list__remove {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex: 0 0 16px;
+
+  width: 16px;
+  height: 16px;
+
   padding: 0;
-  border: none;
+  border: 0;
   background: transparent;
-  font-size: 20px;
-  line-height: 1;
+
   cursor: pointer;
 }
 
-.knowledge-base__save {
+.document-list__remove img {
+  width: 16px;
+  height: 16px;
+}
+
+/* =========================
+   Upload / Submit Button
+   ========================= */
+
+.knowledge-base__button {
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 74px;
-  height: 44px;
-  margin-top: 24px;
+  align-items: center;
+
+  width: 100%;
+  height: 52px;
+
   padding: 10px 16px;
+  gap: 10px;
+
   box-sizing: border-box;
+
   border: none;
   border-radius: 8px;
+
   background: #1c1c1c;
   color: #ffffff;
-  font-family: 'Work Sans', Arial, Helvetica, sans-serif;
+
+  font-family: 'Work Sans', sans-serif;
   font-size: 18px;
-  font-weight: 500;
   line-height: 21px;
+  font-weight: 500;
+
   cursor: pointer;
+}
+
+.knowledge-base__button:hover {
+  opacity: 0.9;
+}
+
+.knowledge-base__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media screen and (max-width: 600px) {
+  .knowledge-base {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .knowledge-base__main {
+    width: 100%;
+    max-width: none;
+
+    padding: 32px 20px;
+    margin: 0;
+
+    box-sizing: border-box;
+  }
+
+  .knowledge-base__title {
+    width: 100%;
+  }
+
+  .upload-section {
+    width: 100%;
+  }
+
+  .upload-area {
+    width: 100%;
+  }
+
+  .document-list {
+    width: 100%;
+  }
+
+  .knowledge-base__button {
+    width: 100%;
+  }
 }

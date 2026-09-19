@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { getChats, createChat, getChat, sendMessage } from "../../utils/api";
 import type { Chat as ChatType, Message } from "../../utils/api";
+import sendIcon from "../../assets/send.png";
 import "./Chat.css";
 
 type MobileContext = {
@@ -311,14 +312,16 @@ export default function Chat() {
                 />
 
                 <button
-                  className="chat__send"
-                  type="button"
-                  aria-label="Send message"
-                  onClick={handleSend}
-                  disabled={isSending || !input.trim()}
-                >
-                  Send
-                </button>
+  type="submit"
+  className="chat__send-button"
+  aria-label="Send message"
+>
+  <img
+    src={sendIcon}
+    alt=""
+    className="chat__send-icon"
+  />
+</button>
               </div>
             </>
           )}
