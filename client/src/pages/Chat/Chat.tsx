@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import { getChats, createChat, getChat, sendMessage } from "../../utils/api";
+import {
+  getChats,
+  createChat,
+  getChat,
+  sendMessage,
+} from "../../utils/api";
 import type { Chat as ChatType, Message } from "../../utils/api";
 import sendIcon from "../../assets/send.png";
 import "./Chat.css";
@@ -51,10 +56,11 @@ export default function Chat() {
 
   // Load messages when a chat is selected
   useEffect(() => {
-    if (!activeChatId) return;
+    if (!activeChatId) {
+      return;
+    }
 
     const load = async () => {
-      setMessages([]);
       setIsLoadingMessages(true);
       setMessagesError("");
 
@@ -95,7 +101,9 @@ export default function Chat() {
   const handleSend = async () => {
     const text = input.trim();
 
-    if (!text || !activeChatId || isSending) return;
+    if (!text || !activeChatId || isSending) {
+      return;
+    }
 
     const userMessage: Message = {
       _id: Date.now().toString(),
@@ -140,6 +148,12 @@ export default function Chat() {
     }
   };
 
+  // Open the new chat form
+  const handleStartNewChat = () => {
+    setIsCreatingChat(true);
+    setIsMobileMenuOpen(true);
+  };
+
   return (
     <div className="chat">
       {/* Sidebar */}
@@ -182,11 +196,15 @@ export default function Chat() {
         )}
 
         {isLoadingChats && (
-          <p className="chat__sidebar-message">Loading…</p>
+          <p className="chat__sidebar-message">
+            Loading…
+          </p>
         )}
 
         {chatsError && (
-          <p className="chat__sidebar-message">{chatsError}</p>
+          <p className="chat__sidebar-message">
+            {chatsError}
+          </p>
         )}
 
         <ul className="chat__list">
@@ -210,59 +228,72 @@ export default function Chat() {
       </aside>
 
       {/* Main chat area */}
-      <div className="chat__main">
-
-    
-
-        {/* No chat selected */}
+      <main className="chat__main">
+        {/* Initial state - no chat selected */}
         {!messagesError &&
           !isLoadingMessages &&
           !activeChatId && (
             <div className="chat__no-messages">
-              <h2>
-                Create a new chat or select an existing one to
-                start the conversation
-              </h2>
+              <div className="chat__initial-container">
+                <h2>
+                  Create a new chat or select an existing one to
+                  start the conversation
+                </h2>
 
-              <button
-                className="chat__start-btn"
-                type="button"
-                onClick={() => {
-                  setIsCreatingChat(true);
-                  setIsMobileMenuOpen(true);
-                }}
-              >
-                Start New Chat
-              </button>
+                <button
+                  className="chat__start-button"
+                  type="button"
+                  onClick={handleStartNewChat}
+                >
+                  Start a new chat
+                </button>
+              </div>
             </div>
           )}
 
-        {/* Chat selected but no messages */}
+        {/* Selected chat with no messages */}
         {!messagesError &&
           !isLoadingMessages &&
           activeChatId &&
           messages.length === 0 && (
             <div className="chat__no-messages">
-              <h2>Start a conversation</h2>
+              <div className="chat__empty-container">
+  <h2>Ask a question below to start the conversation</h2>
 
-              <button
-                className="chat__start-btn"
-                type="button"
-                onClick={() => {
-                  setIsCreatingChat(true);
-                  setIsMobileMenuOpen(true);
-                }}
-              >
-                Start New Chat
-              </button>
+  <div className="chat__empty-input">
+    <textarea
+      className="chat__empty-textarea"
+      placeholder="Ask anything..."
+      rows={1}
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+      onKeyDown={handleKeyDown}
+      disabled={isSending}
+    />
+
+    <div className="chat__empty-input-container">
+      <div className="chat__empty-icon-frame" />
+
+      <button
+        className="chat__empty-send"
+        type="button"
+        onClick={handleSend}
+        disabled={!input.trim() || isSending}
+        aria-label="Send message"
+      >
+        <img src={sendIcon} alt="Send message" />
+      </button>
+    </div>
+  </div>
+</div>
             </div>
           )}
 
         {/* Loading messages */}
         {activeChatId && isLoadingMessages && (
-          <p className="chat__no-messages">
-            Loading messages…
-          </p>
+          <div className="chat__no-messages">
+            <p>Loading messages…</p>
+          </div>
         )}
 
         {/* Message error */}
@@ -276,7 +307,8 @@ export default function Chat() {
         {/* Loaded messages + input */}
         {activeChatId &&
           !isLoadingMessages &&
-          !messagesError && (
+          !messagesError &&
+          messages.length > 0 && (
             <>
               <ul className="chat__messages">
                 {messages.map((msg) => (
@@ -301,31 +333,34 @@ export default function Chat() {
 
               {/* Input bar */}
               <div className="chat__input-bar">
-                <textarea
-                  className="chat__input"
-                  placeholder="Ask any question"
-                  rows={1}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  disabled={isSending}
-                />
+                <div className="chat__input-wrapper">
+                  <textarea
+                    className="chat__input"
+                    placeholder="Ask any question"
+                    rows={1}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={isSending}
+                  />
 
-                <button
-  type="submit"
-  className="chat__send-button"
-  aria-label="Send message"
->
-  <img
-    src={sendIcon}
-    alt=""
-    className="chat__send-icon"
-  />
-</button>
+                  <button
+                    type="button"
+                    className="chat__send"
+                    onClick={handleSend}
+                    disabled={!input.trim() || isSending}
+                    aria-label="Send message"
+                  >
+                    <img
+                      src={sendIcon}
+                      alt="Send message"
+                    />
+                  </button>
+                </div>
               </div>
             </>
           )}
-      </div>
+      </main>
     </div>
   );
 }
