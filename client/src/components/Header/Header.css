@@ -14,6 +14,7 @@
 .header__logo {
   width: 98.7px;
   height: 26px;
+  object-fit: contain;
 }
 
 .header__nav {
@@ -44,9 +45,12 @@
 
 .header__menu-btn {
   display: none;
+  flex-shrink: 0;
   width: 24px;
   height: 24px;
   padding: 0;
+  border: 0;
+  background-color: transparent;
   background-image: url('../../assets/icon.png');
   background-repeat: no-repeat;
   background-position: center;
@@ -54,40 +58,57 @@
   cursor: pointer;
 }
 
-/* Mobile */
+/* =========================
+   Mobile
+   ========================= */
 
-@media (max-width: 1200px) {
+@media (max-width: 600px) {
   .header {
-    justify-content: flex-start;
-    gap: 12px;
-    border-bottom: 1px solid rgb(0 0 0 / 0.1);
+    height: 56px;
+    padding: 12px 20px;
+    justify-content: space-between;
+    gap: 0;
+    border-bottom: 1px solid rgb(0 0 0 / 10%);
   }
 
   .header__menu-btn {
     display: block;
+    order: 1;
   }
 
   .header__logo {
-    margin-left: auto;
+    order: 2;
+    width: 98.7px;
+    height: 26px;
+    margin: 0;
   }
 
   .header__nav {
     position: fixed;
     top: 56px;
-    bottom: 0;
     left: 0;
-    width: 75%;
-    max-width: 255px;
+    bottom: 0;
+
+    width: 255px;
+    max-width: calc(100vw - 40px);
+
     display: none;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
+    align-items: stretch;
+    justify-content: flex-start;
+
     gap: 8px;
     padding: 20px;
+
     box-sizing: border-box;
-    border-top: 1px solid rgb(0 0 0 / 0.1);
+
     background-color: #ffffff;
-    z-index: 101;
+    border-top: 1px solid rgb(0 0 0 / 10%);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    z-index: 102;
   }
 
   .header__nav_mobile {
@@ -96,6 +117,8 @@
 
   .header__link {
     width: 100%;
+    height: 36px;
     justify-content: flex-start;
+    flex-shrink: 0;
   }
 }
