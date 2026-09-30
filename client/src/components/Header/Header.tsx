@@ -38,7 +38,7 @@ export default function Header({
       />
 
       <img
-        src="/Logo.png"
+        src="/logo.png"
         alt="Mesh AI logo"
         className="header__logo"
       />

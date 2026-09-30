@@ -1,0 +1,263 @@
+.auth {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Header / Menu */
+
+.header {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: calc(100% - 2px);
+  height: 56px;
+  box-sizing: border-box;
+  padding: 12px 20px;
+}
+
+.header__inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 26px;
+}
+
+.header__logo {
+  display: block;
+  width: 98.7px;
+  height: 26px;
+  object-fit: contain;
+}
+
+/* Login card */
+
+.form-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 440px;
+  height: 523px;
+  padding: 32px 32px 48px;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+}
+
+/* Form */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 380px;
+  gap: 40px;
+}
+
+/* Heading */
+
+.form__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 380px;
+  gap: 8px;
+}
+
+.form__title {
+  width: 380px;
+  height: 41px;
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 41px;
+  color: #1c1c1c;
+}
+
+.form__subtitle {
+  width: 380px;
+  height: 16px;
+  margin: 0;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  color: #1c1c1c;
+}
+
+/* Form content */
+
+.form__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 380px;
+  margin: 0;
+  padding: 0;
+  gap: 24px;
+}
+
+/* Tabs */
+
+.form__tabs {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 380px;
+  height: 44px;
+  gap: 12px;
+}
+
+.form__tab {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 184px;
+  height: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgba(150, 121, 217, 0.2);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #000000;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 21px;
+  text-decoration: none;
+}
+
+.form__tab_active {
+  border: none;
+  background:
+    linear-gradient(
+      360deg,
+      rgba(150, 121, 217, 0.2) 0%,
+      rgba(245, 245, 245, 0.2) 100%
+    ),
+    rgba(150, 121, 217, 0.6);
+}
+
+/* Fields */
+
+.form__field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 380px;
+  gap: 12px;
+}
+
+.form__label {
+  width: 380px;
+  height: 21px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21px;
+  color: #1c1c1c;
+}
+
+.form__input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  width: 380px;
+  height: 44px;
+  padding: 10px 16px;
+  border: 1px solid rgba(28, 28, 28, 0.3);
+  border-radius: 8px;
+  background: #ffffff;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21px;
+  color: #1c1c1c;
+}
+
+.form__input:focus {
+  outline: none;
+  border-color: #9679d9;
+}
+
+/* Errors */
+
+.form__error {
+  margin-top: -6px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  color: #d32f2f;
+}
+
+/* Buttons */
+
+.form__buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 164px;
+  height: 44px;
+  gap: 9px;
+}
+
+.form__button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 80px;
+  height: 44px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #1c1c1c;
+  color: #ffffff;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.form__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Status */
+
+.form__status {
+  width: 100%;
+  min-height: 20px;
+}
+
+/* Register */
+
+.form-card_register {
+  width: 440px;
+  height: 624px;
+}
+
+.form__buttons_register {
+  width: 167px;
+  height: 44px;
+}
+
+.form__button_register {
+  width: 167px;
+  height: 44px;
+}
