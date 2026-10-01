@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import {
@@ -17,6 +17,8 @@ type MobileContext = {
 };
 
 export default function Chat() {
+  const messagesEndRef = useRef<HTMLLIElement>(null);
+
   const { isMobileMenuOpen, setIsMobileMenuOpen } =
     useOutletContext<MobileContext>();
 
@@ -77,6 +79,13 @@ export default function Chat() {
     load();
   }, [activeChatId]);
 
+  // Scroll to the latest message whenever messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
+
   // Create a new chat
   const handleCreateChat = async () => {
     const title = newChatTitle.trim() || "New Chat";
@@ -99,51 +108,51 @@ export default function Chat() {
 
   // Send a message
   const handleSend = async () => {
-  const text = input.trim();
+    const text = input.trim();
 
-  if (!text || !activeChatId || isSending) {
-    return;
-  }
-
-  const userMessage: Message = {
-    _id: Date.now().toString(),
-    chatId: activeChatId,
-    role: "user",
-    content: text,
-    createdAt: new Date().toISOString(),
-  };
-
-  setMessages((prev) => [...prev, userMessage]);
-  setInput("");
-  setIsSending(true);
-
-  try {
-    const res = await sendMessage(activeChatId, text);
-
-    if (res.data) {
-      setMessages((prev) => [
-        ...prev.filter((m) => m._id !== userMessage._id),
-        ...res.data!,
-      ]);
+    if (!text || !activeChatId || isSending) {
+      return;
     }
-  } catch {
-    const errorMessage: Message = {
+
+    const userMessage: Message = {
       _id: Date.now().toString(),
       chatId: activeChatId,
-      role: "assistant",
-      content: "Something went wrong. Please try again.",
+      role: "user",
+      content: text,
       createdAt: new Date().toISOString(),
     };
 
-    setMessages((prev) => [...prev, errorMessage]);
-  } finally {
-    setIsSending(false);
-  }
-};
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsSending(true);
+
+    try {
+      const res = await sendMessage(activeChatId, text);
+
+      if (res.data) {
+        setMessages((prev) => [
+          ...prev.filter((m) => m._id !== userMessage._id),
+          ...res.data!,
+        ]);
+      }
+    } catch {
+      const errorMessage: Message = {
+        _id: Date.now().toString(),
+        chatId: activeChatId,
+        role: "assistant",
+        content: "Something went wrong. Please try again.",
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   // Handle Enter key
   const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLTextAreaElement>
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -261,34 +270,39 @@ export default function Chat() {
           messages.length === 0 && (
             <div className="chat__no-messages">
               <div className="chat__empty-container">
-  <h2>Ask a question below to start the conversation</h2>
+                <h2>
+                  Ask a question below to start the conversation
+                </h2>
 
-  <div className="chat__empty-input">
-    <textarea
-      className="chat__empty-textarea"
-      placeholder="Ask anything..."
-      rows={1}
-      value={input}
-      onChange={(e) => setInput(e.target.value)}
-      onKeyDown={handleKeyDown}
-      disabled={isSending}
-    />
+                <div className="chat__empty-input">
+                  <textarea
+                    className="chat__empty-textarea"
+                    placeholder="Ask anything..."
+                    rows={1}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={isSending}
+                  />
 
-    <div className="chat__empty-input-container">
-      <div className="chat__empty-icon-frame" />
+                  <div className="chat__empty-input-container">
+                    <div className="chat__empty-icon-frame" />
 
-      <button
-        className="chat__empty-send"
-        type="button"
-        onClick={handleSend}
-        disabled={!input.trim() || isSending}
-        aria-label="Send message"
-      >
-        <img src={sendIcon} alt="Send message" />
-      </button>
-    </div>
-  </div>
-</div>
+                    <button
+                      className="chat__empty-send"
+                      type="button"
+                      onClick={handleSend}
+                      disabled={!input.trim() || isSending}
+                      aria-label="Send message"
+                    >
+                      <img
+                        src={sendIcon}
+                        alt="Send message"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -314,31 +328,33 @@ export default function Chat() {
           messages.length > 0 && (
             <>
               <ul className="chat__messages">
-  {messages.map((msg) => (
-    <li
-      key={msg._id}
-      className={
-        msg.role === "user"
-          ? "chat__message chat__message_user"
-          : "chat__message chat__message_assistant"
-      }
-    >
-      {msg.role === "assistant" ? (
-        <ReactMarkdown>
-          {msg.content}
-        </ReactMarkdown>
-      ) : (
-        msg.content
-      )}
-    </li>
-  ))}
+                {messages.map((msg) => (
+                  <li
+                    key={msg._id}
+                    className={
+                      msg.role === "user"
+                        ? "chat__message chat__message_user"
+                        : "chat__message chat__message_assistant"
+                    }
+                  >
+                    {msg.role === "assistant" ? (
+                      <ReactMarkdown>
+                        {msg.content}
+                      </ReactMarkdown>
+                    ) : (
+                      msg.content
+                    )}
+                  </li>
+                ))}
 
-  {isSending && (
-    <li className="chat__message chat__message_assistant chat__message_thinking">
-      Thinking…
-    </li>
-  )}
-</ul>
+                {isSending && (
+                  <li className="chat__message chat__message_assistant chat__message_thinking">
+                    Thinking…
+                  </li>
+                )}
+
+                <li ref={messagesEndRef} />
+              </ul>
 
               {/* Input bar */}
               <div className="chat__input-bar">

@@ -446,7 +446,7 @@
   flex: 1;
 
   margin: 0 auto;
-  padding: 40px;
+  padding: 40px 40px 340px;
 
   box-sizing: border-box;
 
@@ -495,17 +495,21 @@
 }
 
 /* =========================
-   Regular Message Input
+   Message Input
    ========================= */
 
 .chat__input-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+
   display: flex;
   justify-content: center;
 
   width: 100%;
   max-width: 670px;
-
-  margin: 0 auto;
 
   padding: 0 16px 32px;
 
@@ -587,6 +591,25 @@
 .chat__send:disabled {
   cursor: not-allowed;
   opacity: 0.4;
+}
+
+/* =========================
+   Message Fade
+   ========================= */
+
+.chat::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 340px;
+
+  background: linear-gradient(to bottom, transparent 0%, #fff 35%);
+
+  pointer-events: none;
+
+  z-index: 1;
 }
 
 /* =========================
@@ -909,7 +932,7 @@
     width: 100%;
     max-width: none;
 
-    padding: 24px 16px;
+    padding: 24px 16px 340px;
 
     box-sizing: border-box;
   }
@@ -923,6 +946,12 @@
      ========================= */
 
   .chat__input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+
     width: 100%;
     max-width: none;
 
@@ -1017,7 +1046,7 @@
   }
 
   .chat__messages {
-    padding: 20px 12px;
+    padding: 20px 12px 340px;
   }
 
   .chat__input-bar {
