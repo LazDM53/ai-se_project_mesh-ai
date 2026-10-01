@@ -247,3 +247,9 @@ export const sendMessage = async (
     error: null,
   };
 };
+
+
+// temporary stub, replaced in the next lesson
+export const getCurrentUser = async (): Promise<never> => {
+  throw new Error("Not implemented yet");
+};
