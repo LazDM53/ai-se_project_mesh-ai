@@ -1,4 +1,49 @@
+import type { CurrentUser } from "../types";
+
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+const BASE_URL = "/api";
+
+export type ApiResponse<T> = {
+  success: boolean;
+  data: T | null;
+  error: { message: string } | null;
+};
+
+async function request<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<ApiResponse<T>> {
+  const token = localStorage.getItem("auth-token") ?? "";
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
+
+  if (res.status === 401) {
+    const body = await res.json().catch(() => null);
+    const message = body?.error?.message || "Invalid credentials";
+
+    if (localStorage.getItem("auth-token")) {
+      localStorage.removeItem("auth-token");
+      window.location.href = "/login";
+    }
+
+    throw new Error(message);
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error?.message || "Request failed");
+  }
+
+  return res.json();
+}
 
 export type KnowledgeDoc = {
   _id: string;
@@ -23,14 +68,9 @@ export type Message = {
   createdAt: string;
 };
 
-export type ApiResponse<T> = {
-  success: boolean;
-  data: T | null;
-  error: { message: string } | null;
-};
-
 export const getDocuments = async (): Promise<ApiResponse<KnowledgeDoc[]>> => {
   await delay(700);
+
   return {
     success: true,
     data: [
@@ -69,6 +109,7 @@ export const getDocuments = async (): Promise<ApiResponse<KnowledgeDoc[]>> => {
 
 export const getChats = async (): Promise<ApiResponse<Chat[]>> => {
   await delay(700);
+
   return {
     success: true,
     data: [
@@ -170,7 +211,8 @@ export const getChat = async (
         _id: "m9",
         chatId: id,
         role: "user",
-        content: "I have a marketing hypothesis I'd like to test. Users who read the onboarding guide convert to paid plans at a higher rate. How should I test this?",
+        content:
+          "I have a marketing hypothesis I'd like to test. Users who read the onboarding guide convert to paid plans at a higher rate. How should I test this?",
         createdAt: new Date().toISOString(),
       },
       {
@@ -216,8 +258,11 @@ export const getChat = async (
   };
 };
 
-export const createChat = async (title: string): Promise<ApiResponse<Chat>> => {
+export const createChat = async (
+  title: string,
+): Promise<ApiResponse<Chat>> => {
   await delay(400);
+
   return {
     success: true,
     data: {
@@ -235,6 +280,7 @@ export const sendMessage = async (
   question: string,
 ): Promise<ApiResponse<Message>> => {
   await delay(1500);
+
   return {
     success: true,
     data: {
@@ -248,8 +294,24 @@ export const sendMessage = async (
   };
 };
 
+export function getCurrentUser() {
+  return request<CurrentUser>("/auth/me");
+}
 
-// temporary stub, replaced in the next lesson
-export const getCurrentUser = async (): Promise<never> => {
-  throw new Error("Not implemented yet");
-};
+export function registerUser(
+  name: string,
+  email: string,
+  password: string,
+) {
+  return request<{ token: string; user: CurrentUser }>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ name, email, password }),
+  });
+}
+
+export function loginUser(email: string, password: string) {
+  return request<{ token: string; user: CurrentUser }>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+}

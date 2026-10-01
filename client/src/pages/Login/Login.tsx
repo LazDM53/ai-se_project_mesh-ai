@@ -1,17 +1,37 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import { loginUser } from "../../utils/api";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const { values, handleChange, errors, isValid } =
     useFormWithValidation({
       email: "",
       password: "",
     });
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(values);
+    setError("");
+
+    try {
+      const res = await loginUser(values.email, values.password);
+
+      if (res.data) {
+        login(res.data.token, res.data.user);
+        navigate("/knowledge");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Login failed",
+      );
+    }
   };
 
   return (
@@ -20,7 +40,7 @@ export default function Login() {
         <div className="header__inner">
           <img
             className="header__logo"
-            src="/Logo.png"
+            src="/logo.png"
             alt="MeshAI logo"
           />
         </div>
@@ -111,7 +131,9 @@ export default function Login() {
             <div
               className="form__status"
               aria-live="polite"
-            />
+            >
+              {error}
+            </div>
           </form>
         </div>
       </main>

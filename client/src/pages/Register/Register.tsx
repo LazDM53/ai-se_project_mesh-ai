@@ -1,8 +1,11 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import { registerUser } from "../../utils/api";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const { values, handleChange, errors, isValid } =
     useFormWithValidation({
       name: "",
@@ -10,9 +13,20 @@ export default function Register() {
       password: "",
     });
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(values);
+    setError("");
+
+    try {
+      await registerUser(values.name, values.email, values.password);
+      navigate("/login");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Registration failed",
+      );
+    }
   };
 
   return (
@@ -39,10 +53,7 @@ export default function Register() {
 
           <form className="form__content" onSubmit={handleSubmit}>
             <div className="form__tabs">
-              <NavLink
-                to="/login"
-                className="form__tab"
-              >
+              <NavLink to="/login" className="form__tab">
                 Login
               </NavLink>
 
@@ -136,7 +147,9 @@ export default function Register() {
             <div
               className="form__status"
               aria-live="polite"
-            />
+            >
+              {error}
+            </div>
           </form>
         </div>
       </main>
