@@ -9,6 +9,7 @@ type AuthContextType = {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   isLoading: boolean;
   login: (token: string, user: CurrentUser) => void;
+  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -22,6 +23,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("auth-token", token);
     setCurrentUser(user);
     setIsAuthenticated(true);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("auth-token");
+    setCurrentUser(null);
+    setIsAuthenticated(false);
   };
 
   useEffect(() => {
@@ -58,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated,
         isLoading,
         login,
+        logout,
       }}
     >
       {children}

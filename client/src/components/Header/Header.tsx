@@ -1,4 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import "./Header.css";
 
 type Props = {
@@ -12,6 +14,11 @@ export default function Header({
   onMenuClose,
   isMobileMenuOpen,
 }: Props) {
+  const { isAuthenticated, currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+
   function getNavLinkClass({
     isActive,
   }: {
@@ -21,6 +28,13 @@ export default function Header({
       ? "header__link header__link_active"
       : "header__link";
   }
+
+  const handleLogout = () => {
+    logout();
+    setIsAccountMenuOpen(false);
+    onMenuClose();
+    navigate("/login");
+  };
 
   return (
     <header
@@ -43,29 +57,61 @@ export default function Header({
         className="header__logo"
       />
 
-      <nav
-        className={
-          isMobileMenuOpen
-            ? "header__nav header__nav_mobile"
-            : "header__nav"
-        }
-      >
-        <NavLink
-          to="/knowledge"
-          className={getNavLinkClass}
-          onClick={onMenuClose}
-        >
-          Knowledge Base
-        </NavLink>
+      {isAuthenticated && (
+        <>
+          <nav
+            className={
+              isMobileMenuOpen
+                ? "header__nav header__nav_mobile"
+                : "header__nav"
+            }
+          >
+            <NavLink
+              to="/knowledge"
+              className={getNavLinkClass}
+              onClick={onMenuClose}
+            >
+              Knowledge Base
+            </NavLink>
 
-        <NavLink
-          to="/chat"
-          className={getNavLinkClass}
-          onClick={onMenuClose}
-        >
-          Chat
-        </NavLink>
-      </nav>
+            <NavLink
+              to="/chat"
+              className={getNavLinkClass}
+              onClick={onMenuClose}
+            >
+              Chat
+            </NavLink>
+          </nav>
+
+          <div className="header__account">
+            <button
+              type="button"
+              className="header__dropdown-btn"
+              aria-haspopup="menu"
+              aria-expanded={isAccountMenuOpen}
+              onClick={() =>
+                setIsAccountMenuOpen(!isAccountMenuOpen)
+              }
+            >
+              {currentUser?.name}'s Account
+            </button>
+
+            {isAccountMenuOpen && (
+              <ul className="header__menu" role="menu">
+                <li role="none">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            )}
+          </div>
+        </>
+      )}
     </header>
   );
 }
