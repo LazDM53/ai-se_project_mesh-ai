@@ -1,32 +1,45 @@
 import { useEffect, useState } from "react";
-import { getDocuments } from "../../utils/api";
 import UploadArea from "../../components/UploadArea/UploadArea";
+import {
+  getDocuments,
+  uploadDocument,
+} from "../../utils/api";
 import type { KnowledgeDoc } from "../../utils/api";
 import "./KnowledgeBase.css";
 
 export default function KnowledgeBase() {
   const [documents, setDocuments] = useState<KnowledgeDoc[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFileSelect = (file: File) => {
-    const newDoc: KnowledgeDoc = {
-      _id: Date.now().toString(),
-      title: file.name,
-      fileName: file.name,
-      userId: "local",
-      createdAt: new Date().toISOString(),
-    };
+  const handleFileSelect = async (file: File) => {
+    setIsUploading(true);
+    setError(null);
 
-    setDocuments((currentDocuments) => [
-      newDoc,
-      ...currentDocuments,
-    ]);
+    try {
+      const res = await uploadDocument(file);
+
+      if (res.data) {
+        setDocuments((currentDocuments) => [
+          res.data!,
+          ...currentDocuments,
+        ]);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to upload document.",
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleDelete = (id: string) => {
     setDocuments((currentDocuments) =>
-      currentDocuments.filter((doc) => doc._id !== id)
+      currentDocuments.filter((doc) => doc._id !== id),
     );
   };
 
@@ -56,7 +69,10 @@ export default function KnowledgeBase() {
           Upload documents (PDF)
         </p>
 
-        <UploadArea onFileSelect={handleFileSelect} />
+        <UploadArea
+          onFileSelect={handleFileSelect}
+          isUploading={isUploading}
+        />
       </div>
 
       <div className="knowledge-base__documents">
@@ -89,14 +105,8 @@ export default function KnowledgeBase() {
           </>
         )}
       </div>
-
-      <button
-        type="button"
-        className="knowledge-base__save"
-      >
-        Save
-      </button>
     </section>
   );
 }
+
 

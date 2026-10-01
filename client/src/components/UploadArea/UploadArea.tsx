@@ -3,18 +3,31 @@ import UploadIcon from "../../assets/upload.png";
 
 type Props = {
   onFileSelect: (file: File) => void;
+  isUploading: boolean;
 };
 
-export default function UploadArea({ onFileSelect }: Props) {
+export default function UploadArea({
+  onFileSelect,
+  isUploading,
+}: Props) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) onFileSelect(file);
+
+    if (file && !isUploading) {
+      onFileSelect(file);
+    }
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+
+    if (isUploading) return;
+
     const file = e.dataTransfer.files?.[0];
-    if (file) onFileSelect(file);
+
+    if (file) {
+      onFileSelect(file);
+    }
   };
 
   return (
@@ -31,8 +44,14 @@ export default function UploadArea({ onFileSelect }: Props) {
         />
 
         <span className="upload-area__text">
-          Drag and drop a PDF, or{" "}
-          <span className="underline">Upload</span>
+          {isUploading ? (
+            "Uploading..."
+          ) : (
+            <>
+              Drag and drop a PDF, or{" "}
+              <span className="underline">Upload</span>
+            </>
+          )}
         </span>
 
         <input
@@ -40,9 +59,9 @@ export default function UploadArea({ onFileSelect }: Props) {
           accept=".pdf"
           className="upload-area__input"
           onChange={handleChange}
+          disabled={isUploading}
         />
       </label>
     </div>
   );
 }
-
