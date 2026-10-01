@@ -1,19 +1,20 @@
-import type { Request, Response } from 'express';
+import type { Request, Response } from "express";
 
-import Chat from '../models/chat.js';
-import Message from '../models/message.js';
-import Document from '../models/document.js';
-import Chunk from '../models/chunk.js';
+import Chat from "../models/chat.js";
+import Message from "../models/message.js";
+import Document from "../models/document.js";
+import Chunk from "../models/chunk.js";
 
-import { createEmbedding } from '../utils/embeddings.js';
+import { createEmbedding } from "../utils/embeddings.js";
 
 import {
   getClient,
   LLM_MODEL,
   buildContext,
-} from '../utils/openai-client.js';
+  stripThinking,
+} from "../utils/openai-client.js";
 
-import { rankBySimilarity } from '../utils/vector-search.js';
+import { rankBySimilarity } from "../utils/vector-search.js";
 
 export const createMessage = async (
   req: Request,
@@ -31,7 +32,7 @@ export const createMessage = async (
     res.status(400).json({
       success: false,
       data: null,
-      error: { message: 'question is required' },
+      error: { message: "question is required" },
     });
     return;
   }
@@ -46,13 +47,13 @@ export const createMessage = async (
     res.status(404).json({
       success: false,
       data: null,
-      error: { message: 'Chat not found' },
+      error: { message: "Chat not found" },
     });
     return;
   }
 
   // Find documents belonging to the logged-in user
-  const userDocs = await Document.find({ userId }, '_id');
+  const userDocs = await Document.find({ userId }, "_id");
 
   const docIds = userDocs.map((document) => document._id);
 
@@ -86,32 +87,33 @@ export const createMessage = async (
     model: LLM_MODEL,
     messages: [
       {
-        role: 'system',
+        role: "system",
         content:
-          'You are a helpful assistant. Answer the question using only the provided context. If the answer cannot be found in the context, say you do not have enough information.',
+          "You are a helpful assistant. Answer the question using only the provided context. If the answer cannot be found in the context, say you do not have enough information.",
       },
       {
-        role: 'user',
+        role: "user",
         content: `Context:\n${context}\n\nQuestion:\n${question}`,
       },
     ],
   });
 
+  // Remove any <think>...</think> reasoning from the model response
   const answer =
-    response.choices[0]?.message?.content ??
-    'No answer was generated.';
+    stripThinking(response.choices[0]?.message?.content ?? "") ||
+    "No answer was generated.";
 
   // Save the user's question
   const userMessage = await Message.create({
     chatId,
-    role: 'user',
+    role: "user",
     content: question,
   });
 
   // Save the assistant's answer
   const assistantMessage = await Message.create({
     chatId,
-    role: 'assistant',
+    role: "assistant",
     content: answer,
   });
 

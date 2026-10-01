@@ -99,44 +99,47 @@ export default function Chat() {
 
   // Send a message
   const handleSend = async () => {
-    const text = input.trim();
+  const text = input.trim();
 
-    if (!text || !activeChatId || isSending) {
-      return;
+  if (!text || !activeChatId || isSending) {
+    return;
+  }
+
+  const userMessage: Message = {
+    _id: Date.now().toString(),
+    chatId: activeChatId,
+    role: "user",
+    content: text,
+    createdAt: new Date().toISOString(),
+  };
+
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+  setIsSending(true);
+
+  try {
+    const res = await sendMessage(activeChatId, text);
+
+    if (res.data) {
+      setMessages((prev) => [
+        ...prev.filter((m) => m._id !== userMessage._id),
+        ...res.data!,
+      ]);
     }
-
-    const userMessage: Message = {
+  } catch {
+    const errorMessage: Message = {
       _id: Date.now().toString(),
       chatId: activeChatId,
-      role: "user",
-      content: text,
+      role: "assistant",
+      content: "Something went wrong. Please try again.",
       createdAt: new Date().toISOString(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    setIsSending(true);
-
-    try {
-      const res = await sendMessage(activeChatId, text);
-
-      if (res.data) {
-        setMessages((prev) => [...prev, res.data!]);
-      }
-    } catch {
-      const errorMessage: Message = {
-        _id: Date.now().toString(),
-        chatId: activeChatId,
-        role: "assistant",
-        content: "Something went wrong. Please try again.",
-        createdAt: new Date().toISOString(),
-      };
-
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsSending(false);
-    }
-  };
+    setMessages((prev) => [...prev, errorMessage]);
+  } finally {
+    setIsSending(false);
+  }
+};
 
   // Handle Enter key
   const handleKeyDown = (
@@ -311,25 +314,31 @@ export default function Chat() {
           messages.length > 0 && (
             <>
               <ul className="chat__messages">
-                {messages.map((msg) => (
-                  <li
-                    key={msg._id}
-                    className={
-                      msg.role === "user"
-                        ? "chat__message chat__message_user"
-                        : "chat__message chat__message_assistant"
-                    }
-                  >
-                    {msg.role === "assistant" ? (
-                      <ReactMarkdown>
-                        {msg.content}
-                      </ReactMarkdown>
-                    ) : (
-                      msg.content
-                    )}
-                  </li>
-                ))}
-              </ul>
+  {messages.map((msg) => (
+    <li
+      key={msg._id}
+      className={
+        msg.role === "user"
+          ? "chat__message chat__message_user"
+          : "chat__message chat__message_assistant"
+      }
+    >
+      {msg.role === "assistant" ? (
+        <ReactMarkdown>
+          {msg.content}
+        </ReactMarkdown>
+      ) : (
+        msg.content
+      )}
+    </li>
+  ))}
+
+  {isSending && (
+    <li className="chat__message chat__message_assistant chat__message_thinking">
+      Thinking…
+    </li>
+  )}
+</ul>
 
               {/* Input bar */}
               <div className="chat__input-bar">

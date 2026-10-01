@@ -1,17 +1,18 @@
-import type { Request, Response } from 'express';
+import type { Request, Response } from "express";
 
-import Document from '../models/document.js';
-import Chunk from '../models/chunk.js';
+import Document from "../models/document.js";
+import Chunk from "../models/chunk.js";
 
-import { createEmbedding } from '../utils/embeddings.js';
+import { createEmbedding } from "../utils/embeddings.js";
 
 import {
   getClient,
   LLM_MODEL,
   buildContext,
-} from '../utils/openai-client.js';
+  stripThinking,
+} from "../utils/openai-client.js";
 
-import { rankBySimilarity } from '../utils/vector-search.js';
+import { rankBySimilarity } from "../utils/vector-search.js";
 
 export const queryDocuments = async (
   req: Request,
@@ -23,7 +24,7 @@ export const queryDocuments = async (
     res.status(400).json({
       success: false,
       data: null,
-      error: { message: 'question is required' },
+      error: { message: "question is required" },
     });
     return;
   }
@@ -31,7 +32,7 @@ export const queryDocuments = async (
   const userId = req.user!.userId;
 
   // Find documents belonging to the logged-in user
-  const userDocs = await Document.find({ userId }, '_id');
+  const userDocs = await Document.find({ userId }, "_id");
 
   // Get the document IDs
   const docIds = userDocs.map((doc) => doc._id);
@@ -66,20 +67,21 @@ export const queryDocuments = async (
     model: LLM_MODEL,
     messages: [
       {
-        role: 'system',
+        role: "system",
         content:
-          'You are a helpful assistant. Answer the question using only the provided context. If the answer cannot be found in the context, say you do not have enough information.',
+          "You are a helpful assistant. Answer the question using only the provided context. If the answer cannot be found in the context, say you do not have enough information.",
       },
       {
-        role: 'user',
+        role: "user",
         content: `Context:\n${context}\n\nQuestion:\n${question}`,
       },
     ],
   });
 
+  // Remove any <think>...</think> reasoning from the model response
   const answer =
-    response.choices[0]?.message?.content ??
-    'No answer was generated.';
+    stripThinking(response.choices[0]?.message?.content ?? "") ||
+    "No answer was generated.";
 
   res.status(200).json({
     success: true,
