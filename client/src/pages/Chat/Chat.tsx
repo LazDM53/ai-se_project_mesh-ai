@@ -46,7 +46,8 @@ export default function Chat() {
       try {
         const res = await getChats();
         setChats(res.data || []);
-      } catch {
+      } catch (error) {
+        console.error("Failed to load chats:", error);
         setChatsError("Failed to load chats.");
       } finally {
         setIsLoadingChats(false);
@@ -69,7 +70,8 @@ export default function Chat() {
       try {
         const res = await getChat(activeChatId);
         setMessages(res.data?.messages || []);
-      } catch {
+      } catch (error) {
+        console.error("Failed to load messages:", error);
         setMessagesError("Failed to load messages.");
       } finally {
         setIsLoadingMessages(false);
@@ -101,8 +103,8 @@ export default function Chat() {
         setActiveChatId(res.data._id);
         setIsMobileMenuOpen(false);
       }
-    } catch {
-      // A toast or inline error could go here in the future
+    } catch (error) {
+      console.error("Failed to create chat:", error);
     }
   };
 
@@ -131,11 +133,13 @@ export default function Chat() {
 
       if (res.data) {
         setMessages((prev) => [
-          ...prev.filter((m) => m._id !== userMessage._id),
+          ...prev.filter((message) => message._id !== userMessage._id),
           ...res.data!,
         ]);
       }
-    } catch {
+    } catch (error) {
+      console.error("Failed to send message:", error);
+
       const errorMessage: Message = {
         _id: Date.now().toString(),
         chatId: activeChatId,
@@ -220,20 +224,20 @@ export default function Chat() {
         )}
 
         <ul className="chat__list">
-          {chats.map((c) => (
+          {chats.map((chat) => (
             <li
-              key={c._id}
+              key={chat._id}
               className={
-                c._id === activeChatId
+                chat._id === activeChatId
                   ? "chat__item chat__item_active"
                   : "chat__item"
               }
               onClick={() => {
-                setActiveChatId(c._id);
+                setActiveChatId(chat._id);
                 setIsMobileMenuOpen(false);
               }}
             >
-              {c.title}
+              {chat.title}
             </li>
           ))}
         </ul>
@@ -328,21 +332,21 @@ export default function Chat() {
           messages.length > 0 && (
             <>
               <ul className="chat__messages">
-                {messages.map((msg) => (
+                {messages.map((message) => (
                   <li
-                    key={msg._id}
+                    key={message._id}
                     className={
-                      msg.role === "user"
+                      message.role === "user"
                         ? "chat__message chat__message_user"
                         : "chat__message chat__message_assistant"
                     }
                   >
-                    {msg.role === "assistant" ? (
+                    {message.role === "assistant" ? (
                       <ReactMarkdown>
-                        {msg.content}
+                        {message.content}
                       </ReactMarkdown>
                     ) : (
-                      msg.content
+                      message.content
                     )}
                   </li>
                 ))}
@@ -389,3 +393,5 @@ export default function Chat() {
     </div>
   );
 }
+
+

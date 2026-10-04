@@ -3,6 +3,7 @@ import UploadArea from "../../components/UploadArea/UploadArea";
 import {
   getDocuments,
   uploadDocument,
+  deleteDocument,
 } from "../../utils/api";
 import type { KnowledgeDoc } from "../../utils/api";
 import "./KnowledgeBase.css";
@@ -27,6 +28,8 @@ export default function KnowledgeBase() {
         ]);
       }
     } catch (err) {
+      console.error("Failed to upload document:", err);
+
       setError(
         err instanceof Error
           ? err.message
@@ -37,10 +40,24 @@ export default function KnowledgeBase() {
     }
   };
 
-  const handleDelete = (id: string) => {
-    setDocuments((currentDocuments) =>
-      currentDocuments.filter((doc) => doc._id !== id),
-    );
+  const handleDelete = async (id: string) => {
+    setError(null);
+
+    try {
+      await deleteDocument(id);
+
+      setDocuments((currentDocuments) =>
+        currentDocuments.filter((doc) => doc._id !== id),
+      );
+    } catch (err) {
+      console.error("Failed to delete document:", err);
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to delete document.",
+      );
+    }
   };
 
   useEffect(() => {
@@ -48,7 +65,9 @@ export default function KnowledgeBase() {
       try {
         const res = await getDocuments();
         setDocuments(res.data || []);
-      } catch {
+      } catch (err) {
+        console.error("Failed to load documents:", err);
+
         setError("Failed to load documents.");
       } finally {
         setIsLoading(false);
@@ -108,5 +127,3 @@ export default function KnowledgeBase() {
     </section>
   );
 }
-
-

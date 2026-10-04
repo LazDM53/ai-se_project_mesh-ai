@@ -108,6 +108,14 @@ export const uploadDocument = async (
   return res.json();
 };
 
+export const deleteDocument = (
+  id: string,
+): Promise<ApiResponse<null>> => {
+  return request<null>(`/documents/${id}`, {
+    method: "DELETE",
+  });
+};
+
 /* Chats */
 
 export const getChats = (): Promise<ApiResponse<Chat[]>> => {
@@ -142,7 +150,7 @@ export const sendMessage = (
 /* Authentication */
 
 export function getCurrentUser() {
-  return request<CurrentUser>("/auth/me");
+  return request<CurrentUser>("/users/me");
 }
 
 export function registerUser(

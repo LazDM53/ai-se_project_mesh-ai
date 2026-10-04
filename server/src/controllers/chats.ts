@@ -9,7 +9,7 @@ export const getChats = async (
 ): Promise<void> => {
   const userId = req.user!.userId;
 
-  const chats = await Chat.find({ userId });
+  const chats = await Chat.find({ userId }).sort({ createdAt: -1 });
 
   res.status(200).json({
     success: true,

@@ -13,7 +13,7 @@ export default function UploadArea({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    if (file && !isUploading) {
+    if (file && !isUploading && file.type === "application/pdf") {
       onFileSelect(file);
     }
   };
@@ -25,7 +25,7 @@ export default function UploadArea({
 
     const file = e.dataTransfer.files?.[0];
 
-    if (file) {
+    if (file && file.type === "application/pdf") {
       onFileSelect(file);
     }
   };
