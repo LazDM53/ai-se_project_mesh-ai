@@ -40,6 +40,14 @@ async function request<T>(
     throw new Error(body?.error?.message || "Request failed");
   }
 
+  if (res.status === 204) {
+    return {
+      success: true,
+      data: null,
+      error: null,
+    };
+  }
+
   return res.json();
 }
 
@@ -103,6 +111,14 @@ export const uploadDocument = async (
   if (!res.ok) {
     const body = await res.json().catch(() => null);
     throw new Error(body?.error?.message || "Request failed");
+  }
+
+  if (res.status === 204) {
+    return {
+      success: true,
+      data: null,
+      error: null,
+    };
   }
 
   return res.json();

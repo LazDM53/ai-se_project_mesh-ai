@@ -90,9 +90,30 @@ export const getDocument = (
   });
 };
 
-export const deleteDocument = (
+export const deleteDocument = async (
   req: Request,
   res: Response,
-): void => {
+): Promise<void> => {
+  const userId = req.user!.userId;
+  const { id } = req.params;
+
+  const document = await Document.findOneAndDelete({
+    _id: id,
+    userId,
+  });
+
+  if (!document) {
+    res.status(404).json({
+      success: false,
+      data: null,
+      error: { message: 'Document not found' },
+    });
+    return;
+  }
+
+  await Chunk.deleteMany({
+    documentId: document._id,
+  });
+
   res.sendStatus(204);
 };
