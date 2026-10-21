@@ -1,3 +1,4 @@
+
 import type { Request, Response } from 'express';
 
 import { readFileSync } from 'fs';
@@ -8,6 +9,11 @@ import Chunk from '../models/chunk.js';
 
 import { chunkText } from '../utils/chunk.js';
 import { createEmbedding } from '../utils/embeddings.js';
+import {
+  getCacheValue,
+  setCacheValue,
+  deleteCacheValue,
+} from '../utils/cache.js';
 
 export const uploadDocument = async (
   req: Request,
@@ -57,6 +63,9 @@ export const uploadDocument = async (
     }),
   );
 
+  // Invalidate this user's cached document list
+  deleteCacheValue(`documents-list:${req.user!.userId}`);
+
   res.status(201).json({
     success: true,
     data: document,
@@ -69,14 +78,29 @@ export const getDocuments = async (
   res: Response,
 ): Promise<void> => {
   const userId = req.user!.userId;
+  const cacheKey = `documents-list:${userId}`;
 
+  // Return cached response if available
+  const cached = getCacheValue(cacheKey);
+
+  if (cached) {
+    res.status(200).json(cached);
+    return;
+  }
+
+  // Otherwise, query MongoDB
   const documents = await Document.find({ userId });
 
-  res.status(200).json({
+  const responseData = {
     success: true,
     data: documents,
     error: null,
-  });
+  };
+
+  // Cache the response for 30 seconds
+  setCacheValue(cacheKey, responseData, 30 * 1000);
+
+  res.status(200).json(responseData);
 };
 
 export const getDocument = (
@@ -114,6 +138,9 @@ export const deleteDocument = async (
   await Chunk.deleteMany({
     documentId: document._id,
   });
+
+  // Invalidate this user's cached document list
+  deleteCacheValue(`documents-list:${userId}`);
 
   res.sendStatus(204);
 };

@@ -4,6 +4,7 @@ import type {
   NextFunction,
   RequestHandler,
 } from 'express';
+import { logger } from '../utils/logger.js';
 
 function errorHandler(
   err: Error & { statusCode?: number },
@@ -11,7 +12,7 @@ function errorHandler(
   res: Response,
   next: NextFunction,
 ): void {
-  console.error(err);
+  logger.error(err);
 
   const statusCode = err.statusCode ?? 500;
   const message =
